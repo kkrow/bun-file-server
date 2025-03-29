@@ -1,7 +1,12 @@
+import { env } from "bun";
 import { getUri } from "../utils/get-uri";
 
-const publicDir = `${process.cwd()}/public`;
+const toBoolean = (value: string | undefined) => value === "true";
 
+const publicDir = toBoolean(env.DEV)
+  ? `${process.cwd()}/public`
+  : `${process.cwd()}/dist`;
+console.log(toBoolean(env.DEV));
 export async function handlePublic(req: Request) {
   const uri = getUri(req);
   const filePath = uri.replace("/public/", "");

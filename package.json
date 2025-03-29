@@ -19,7 +19,7 @@
     "dev": "bun --hot run src/index.ts",
     "lint": "eslint src",
     "prettier": "prettier --write .",
-    "build": "bun run build.js",
+    "build": "bun run build.js && bun run compile",
     "start": "bun run dev",
     "compile": "bun build ./src/index.ts --compile --minify --sourcemap ./src/index.ts --outfile bun-file-server"
   }
