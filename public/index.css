@@ -1,0 +1,252 @@
+:root {
+  --primary-color: #111;
+  --text-color: #fff;
+  --button-bg: #e0e1e2;
+  --button-color: #00000099;
+  --border-radius: 0.3rem;
+  --transition: 175ms;
+  --font-family:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-size: clamp(0.8em, 2vw, 1.2em);
+  --container-width: min(90%, 700px);
+  --container-padding: clamp(10px, 2vw, 10px);
+  --dropzone-bg: #00000073;
+  --error-color: #9f3a38;
+  --error-bg: #fff6f6;
+  --input-bg: #fff;
+  --message-bg: #f8f8f9;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  font: var(--font-size) var(--font-family);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  justify-items: center;
+  gap: var(--container-padding);
+}
+
+main {
+  width: var(--container-width);
+  display: flex;
+  flex-direction: column;
+  gap: var(--container-padding);
+  padding-top: var(--container-padding);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1vw, 0.75rem);
+}
+
+header > .icon {
+  font-size: clamp(1.2em, 2vw, 1.5em);
+  filter: grayscale();
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sub {
+  font-size: clamp(0.8em, 1vw, 0.9em);
+  opacity: 0.8;
+}
+
+a {
+  font-size: inherit;
+  color: inherit;
+  text-decoration: none;
+  transition: opacity var(--transition);
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+button,
+.button {
+  display: inline-flex;
+  background: var(--button-bg);
+  color: var(--button-color);
+  padding: clamp(0.8em, 1.5vw, 1em);
+  font-weight: 700;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  transition: transform var(--transition);
+  justify-content: center;
+}
+
+button:hover,
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.inverted {
+  box-shadow: 0 0 0 2px #fff inset;
+  background: transparent;
+  color: #fff;
+}
+
+.input-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: clamp(0.3rem, 1vw, 0.5rem);
+}
+
+input {
+  padding: clamp(0.8em, 1.5vw, 1em);
+  background: var(--input-bg);
+  border: none;
+  border-radius: var(--border-radius);
+  font: inherit;
+  transition: box-shadow var(--transition);
+
+  &:invalid:required {
+    box-shadow: 0 0 0 2px var(--error-color);
+  }
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--button-bg);
+}
+
+.list > .item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition);
+}
+
+.list > .item .content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.list > .item .right.floated.content {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.list > .item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: var(--border-radius);
+}
+
+.error {
+  background-color: var(--error-bg);
+  color: var(--error-color);
+}
+
+#dropzone {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: var(--dropzone-bg);
+  font:
+    bold clamp(24px, 5vw, 42px) Oswald,
+    "DejaVu Sans",
+    Tahoma,
+    sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--transition),
+    visibility var(--transition);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+}
+
+#dropzone.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#textnode {
+  text-align: center;
+  transition: font-size var(--transition);
+}
+
+.progress-bar {
+  display: grid;
+  grid-template-rows: 1fr;
+  height: 20px;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--button-bg);
+  width: 0%;
+  transition: width var(--transition);
+}
+
+.progress-text {
+  text-align: center;
+  font-size: clamp(0.8em, 1vw, 0.9em);
+  opacity: 0.8;
+}
+
+.file-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.file-name {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-size {
+  opacity: 0.8;
+}
+
+.progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.progress-item {
+  display: grid;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.8rem;
+  border-radius: var(--border-radius);
+}
+
+[hidden] {
+  display: none !important;
+}
