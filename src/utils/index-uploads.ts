@@ -5,7 +5,7 @@ import db from "./database";
 const dir = env.ROOT_DIR || "./uploads";
 
 const indexUploads = async () => {
-  const files = await readdir(dir);
+  const files = await readdir(dir.startsWith("./") ? dir : `./${dir}`);
   const dbFiles = db.query(`SELECT name FROM files`).all() as {
     name: string;
   }[];
@@ -14,7 +14,7 @@ const indexUploads = async () => {
     if (!dbFiles.find((f) => f.name === file)) {
       const stat = await Bun.file(`${dir}/${file}`).stat();
       db.run(
-        `INSERT INTO files (name, views, size, date) VALUES ('${file}', 0, ${stat.size}, ${stat.mtimeMs})`,
+        `INSERT INTO files (name, views, size, date) VALUES ('${file}', 0, ${stat.size}, ${stat.mtimeMs})`
       );
     }
   }
