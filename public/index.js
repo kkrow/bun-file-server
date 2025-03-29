@@ -78,7 +78,7 @@ function appendFile(containerId, file, short = false) {
     <div class="right floated content">
       <button class="button inverted" onclick="navigator.clipboard.writeText('${formatUrl(file.url || file.name, short)}')">Copy URL</button>
       ${file.deletionUrl ? `<button class="button inverted" onclick="navigator.clipboard.writeText('${formatUrl(file.deletionUrl, short, true)}')">Copy Deletion URL</button>` : ""}
-    </div>`,
+    </div>`
   );
   container.insertBefore(item, container.firstChild);
 }
@@ -98,7 +98,7 @@ function createProgressElement(file) {
       <div class="progress-fill"></div>
     </div>
     <div class="progress-text">0%</div>
-  `,
+  `
   );
   return progressItem;
 }
@@ -114,10 +114,10 @@ function upload(file, password) {
   const progressText = progressItem.querySelector(".progress-text");
   elements.progressList.insertBefore(
     progressItem,
-    elements.progressList.firstChild,
+    elements.progressList.firstChild
   );
   elements.uploadProgressContainer.hidden = false;
-  console.log(progressFill, progressText);
+
   addEvent(xhr.upload, "progress", (event) => {
     if (event.lengthComputable) {
       const percentComplete = (event.loaded / event.total) * 100;
@@ -199,7 +199,7 @@ async function getFiles() {
     } else {
       showError(
         `Error ${response.status}`,
-        "An error occurred while trying to get the files.",
+        "An error occurred while trying to get the files."
       );
     }
   } catch {
@@ -299,7 +299,7 @@ function dlcfg() {
   const p = elements.passwordInput.value;
   if (!p)
     return alert(
-      "Please enter the upload password before downloading the ShareX config.",
+      "Please enter the upload password before downloading the ShareX config."
     );
   const a = createEl("a");
   const b = new Blob(
@@ -318,7 +318,7 @@ function dlcfg() {
         ErrorMessage: "$json:error$",
       }),
     ],
-    { type: "text/plain" },
+    { type: "text/plain" }
   );
   a.href = URL.createObjectURL(b);
   a.download = "bun-file-server.sxcu";
