@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="description" content="A simple file server hosted on Bun" />
+    <meta name="theme-color" content="#111" />
+    <title>bun-file-server</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div id="dropzone">
+      <div id="textnode">Drop anywhere!</div>
+    </div>
+    <main>
+      <div id="error-div" class="message error" hidden>
+        <h3 id="error-title"></h3>
+        <p id="error-message"></p>
+      </div>
+      <header>
+        <span class="icon">📄</span>
+        <div class="content">
+          <a
+            href="https://github.com/kkrow/bun-file-server"
+            target="_blank"
+            rel="noopener noreferrer"
+            >bun-file-server</a
+          >
+          <div class="sub">A simple file server hosted on Bun</div>
+        </div>
+      </header>
+      <form class="input-group">
+        <input type="password" id="password" placeholder="Password" />
+        <label for="hidden-upload" class="button" form="upload-form"
+          >📁 Upload</label
+        >
+      </form>
+      <div id="upload-progress-container" class="message" hidden>
+        <div class="progress-list"></div>
+      </div>
+      <input id="hidden-upload" type="file" multiple="multiple" hidden />
+      <button hidden onclick="dlcfg()">Download ShareX Config</button>
+      <div id="upload-response-container" class="list" hidden></div>
+      <div class="input-group">
+        <input
+          type="password"
+          id="admin-password"
+          placeholder="Admin Password"
+        />
+        <label id="display-files" class="button" for="admin-password"
+          >📋 Display Files</label
+        >
+      </div>
+      <div class="input-group">
+        <input id="full-url" placeholder="Full URL" type="url" required />
+      </div>
+      <div class="input-group">
+        <input id="short-url" placeholder="Alias (random if empty)" />
+        <label id="short-url-button" class="button" for="short-url"
+          >🗜 Short URL</label
+        >
+      </div>
+      <div id="short-url-container" class="list"></div>
+      <div id="files-response-container" class="list"></div>
+    </main>
+    <script src="./index.js" defer></script>
+  </body>
+</html>
