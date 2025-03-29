@@ -5,7 +5,7 @@ import db from "./database";
 const dir = env.ROOT_DIR || "./uploads";
 
 const indexUploads = async () => {
-  const files = await readdir(dir.startsWith("./") ? dir : `./${dir}`);
+  const files = await readdir(dir);
   const dbFiles = db.query(`SELECT name FROM files`).all() as {
     name: string;
   }[];
