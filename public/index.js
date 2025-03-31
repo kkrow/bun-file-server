@@ -1,4 +1,4 @@
-// Алиасы для часто используемых функций
+// Aliases for frequently used functions
 const $ = document.querySelector.bind(document);
 const createEl = document.createElement.bind(document);
 const removeEl = (element) => element.remove();
@@ -14,7 +14,11 @@ const setText = (element, text) => {
     element.textContent = text;
   }
 };
-const setHTML = (element, html) => (element.innerHTML = html);
+const setHTML = (element, html) => {
+  if (element) {
+    element.textContent = html;
+  }
+};
 const addEvent = (element, event, handler) =>
   element.addEventListener(event, handler);
 const formatDate = (date) => new Date(date).toLocaleString();
@@ -68,18 +72,49 @@ function appendFile(containerId, file, short = false) {
   const container = $(`#${containerId}`);
   const item = createEl("div");
   addClass(item, "item");
-  setHTML(
-    item,
-    `
-    <div class="content">
-      <a href="${formatUrl(file.url || file.name, short)}">${short ? formatUrl(file.url || file.name, short) : file.name}</a>
-      <div class="sub">${file.size ? file.size + " " : ""}${file.views !== undefined ? `${file.views} views ` : ""}(${formatDate(file.date)})</div>
-    </div>
-    <div class="right floated content">
-      <button class="button inverted" onclick="navigator.clipboard.writeText('${formatUrl(file.url || file.name, short)}')">Copy URL</button>
-      ${file.deletionUrl ? `<button class="button inverted" onclick="navigator.clipboard.writeText('${formatUrl(file.deletionUrl, short, true)}')">Copy Deletion URL</button>` : ""}
-    </div>`
-  );
+
+  const content = createEl("div");
+  addClass(content, "content");
+
+  const link = createEl("a");
+  link.href = formatUrl(file.url || file.name, short);
+  link.textContent = short
+    ? formatUrl(file.url || file.name, short)
+    : file.name;
+
+  const sub = createEl("div");
+  addClass(sub, "sub");
+  sub.textContent = `${file.size ? file.size + " " : ""}${file.views !== undefined ? `${file.views} views ` : ""}(${formatDate(file.date)})`;
+
+  content.appendChild(link);
+  content.appendChild(sub);
+  item.appendChild(content);
+
+  const rightContent = createEl("div");
+  addClass(rightContent, "right");
+  addClass(rightContent, "floated");
+  addClass(rightContent, "content");
+
+  const copyButton = createEl("button");
+  addClass(copyButton, "button");
+  addClass(copyButton, "inverted");
+  copyButton.textContent = "Copy URL";
+  copyButton.onclick = () =>
+    navigator.clipboard.writeText(formatUrl(file.url || file.name, short));
+
+  rightContent.appendChild(copyButton);
+
+  if (file.deletionUrl) {
+    const deleteButton = createEl("button");
+    addClass(copyButton, "button");
+    addClass(copyButton, "inverted");
+    deleteButton.textContent = "Copy Deletion URL";
+    deleteButton.onclick = () =>
+      navigator.clipboard.writeText(formatUrl(file.deletionUrl, short, true));
+    rightContent.appendChild(deleteButton);
+  }
+
+  item.appendChild(rightContent);
   container.insertBefore(item, container.firstChild);
 }
 
@@ -87,19 +122,37 @@ function appendFile(containerId, file, short = false) {
 function createProgressElement(file) {
   const progressItem = createEl("div");
   addClass(progressItem, "progress-item");
-  setHTML(
-    progressItem,
-    `
-    <div class="file-info">
-      <div class="file-name">${file.name}</div>
-      <div class="file-size">${formatSize(file.size)}</div>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill"></div>
-    </div>
-    <div class="progress-text">0%</div>
-  `
-  );
+
+  const fileInfo = createEl("div");
+  addClass(fileInfo, "file-info");
+
+  const fileName = createEl("div");
+  addClass(fileName, "file-name");
+  fileName.textContent = file.name;
+
+  const fileSize = createEl("div");
+  addClass(fileSize, "file-size");
+  fileSize.textContent = formatSize(file.size);
+
+  fileInfo.appendChild(fileName);
+  fileInfo.appendChild(fileSize);
+
+  const progressBar = createEl("div");
+  addClass(progressBar, "progress-bar");
+
+  const progressFill = createEl("div");
+  addClass(progressFill, "progress-fill");
+
+  progressBar.appendChild(progressFill);
+
+  const progressText = createEl("div");
+  addClass(progressText, "progress-text");
+  progressText.textContent = "0%";
+
+  progressItem.appendChild(fileInfo);
+  progressItem.appendChild(progressBar);
+  progressItem.appendChild(progressText);
+
   return progressItem;
 }
 
@@ -114,7 +167,7 @@ function upload(file, password) {
   const progressText = progressItem.querySelector(".progress-text");
   elements.progressList.insertBefore(
     progressItem,
-    elements.progressList.firstChild
+    elements.progressList.firstChild,
   );
   elements.uploadProgressContainer.hidden = false;
 
@@ -162,11 +215,11 @@ function upload(file, password) {
   });
 
   xhr.open("POST", API.ENDPOINTS.UPLOAD);
-  xhr.setRequestHeader("x-file-name", file.name);
+  xhr.setRequestHeader("x-file-name", encodeURIComponent(file.name));
   xhr.send(formData);
 }
 
-// Вспомогательная функция для форматирования размера файла
+// Helper function for formatting file size
 function formatSize(bytes) {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
@@ -199,7 +252,7 @@ async function getFiles() {
     } else {
       showError(
         `Error ${response.status}`,
-        "An error occurred while trying to get the files."
+        "An error occurred while trying to get the files.",
       );
     }
   } catch {
@@ -299,7 +352,7 @@ function dlcfg() {
   const p = elements.passwordInput.value;
   if (!p)
     return alert(
-      "Please enter the upload password before downloading the ShareX config."
+      "Please enter the upload password before downloading the ShareX config.",
     );
   const a = createEl("a");
   const b = new Blob(
@@ -318,7 +371,7 @@ function dlcfg() {
         ErrorMessage: "$json:error$",
       }),
     ],
-    { type: "text/plain" }
+    { type: "text/plain" },
   );
   a.href = URL.createObjectURL(b);
   a.download = "bun-file-server.sxcu";
