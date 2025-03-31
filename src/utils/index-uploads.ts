@@ -14,11 +14,11 @@ const indexUploads = async () => {
     if (!dbFiles.find((f) => f.name === file)) {
       const stat = await Bun.file(`${dir}/${file}`).stat();
       db.run(
-        `INSERT INTO files (name, views, size, date) VALUES ('${file}', 0, ${stat.size}, ${stat.mtimeMs})`
+        `INSERT INTO files (name, views, size, date) VALUES ('${file}', 0, ${stat.size}, ${stat.mtimeMs})`,
       );
     }
   }
-  // remove files from db that are not in the directory
+  // Remove files from db that are not in the directory
   for (const file of dbFiles) {
     if (!files.find((f) => f === file.name)) {
       db.run(`DELETE FROM files WHERE name = '${file.name}'`);

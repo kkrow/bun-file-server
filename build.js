@@ -4,10 +4,10 @@ import { minifyHTMLLiteralsPlugin } from "esbuild-plugin-minify-html-literals";
 import * as fs from "fs/promises";
 import { minify } from "html-minifier-terser";
 
-// Очищаем директорию dist перед сборкой
+// Clear dist directory before build
 await fs.rm("dist", { recursive: true, force: true });
 
-// Собираем CSS отдельно
+// Build CSS separately
 await build({
   entryPoints: ["public/index.css"],
   bundle: true,
@@ -16,10 +16,10 @@ await build({
   outfile: "dist/styles.css",
 });
 
-// Читаем собранный CSS
+// Read built CSS
 const cssContent = await fs.readFile("./dist/styles.css", "utf-8");
 
-// Собираем JavaScript
+// Build JavaScript
 await build({
   entryPoints: ["public/index.js"],
   bundle: true,
@@ -38,14 +38,14 @@ await build({
   ],
 });
 
-// Читаем HTML и встраиваем CSS
+// Read HTML and embed CSS
 const htmlContent = await fs.readFile("./public/index.html", "utf-8");
 const htmlWithCss = htmlContent.replace(
   /<link[^>]*href="[^"]*index\.css"[^>]*>/,
   `<style>${cssContent}</style>`,
 );
 
-// Минифицируем HTML с встроенным CSS
+// Minify HTML with embedded CSS
 const minifiedHtml = await minify(htmlWithCss, {
   removeComments: true,
   collapseWhitespace: true,
@@ -54,5 +54,5 @@ const minifiedHtml = await minify(htmlWithCss, {
 });
 await fs.writeFile("./dist/index.html", minifiedHtml);
 
-// Удаляем отдельный CSS файл, так как он теперь встроен в HTML
+// Remove separate CSS file as it's now embedded in HTML
 await fs.unlink("./dist/styles.css");
