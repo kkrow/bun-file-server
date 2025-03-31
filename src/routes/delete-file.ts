@@ -2,7 +2,7 @@ import { env } from "bun";
 import db, { type UploadedFile } from "~/utils/database";
 
 // Get root directory for file storage from environment variables
-const { ROOT_DIR = "./uploads" } = env;
+const { ROOT_DIR = "uploads" } = env;
 
 /**
  * Handles file deletion requests using a unique deletion URL

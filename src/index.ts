@@ -31,7 +31,7 @@ setInterval(
     indexUploads();
     cleanUncompletedUploads();
   },
-  1000 * 60 * 60, // Run every hour
+  1000 * 60 * 60 // Run every hour
 );
 
 /**

@@ -1,11 +1,14 @@
 import { env } from "bun";
-import { readdir } from "node:fs/promises";
+import { mkdir, readdir } from "node:fs/promises";
 import db from "./database";
 
-const dir = env.ROOT_DIR || "./uploads";
+const dir = env.ROOT_DIR || "uploads";
 
 const indexUploads = async () => {
+  const pathExists = await Bun.file(dir).exists();
+  if (!pathExists) await mkdir(dir, { recursive: true });
   const files = await readdir(dir);
+  if (files.length === 0) return;
   const dbFiles = db.query(`SELECT name FROM files`).all() as {
     name: string;
   }[];
@@ -14,7 +17,7 @@ const indexUploads = async () => {
     if (!dbFiles.find((f) => f.name === file)) {
       const stat = await Bun.file(`${dir}/${file}`).stat();
       db.run(
-        `INSERT INTO files (name, views, size, date) VALUES ('${file}', 0, ${stat.size}, ${stat.mtimeMs})`,
+        `INSERT INTO files (name, views, size, date) VALUES ('${file}', 0, ${stat.size}, ${stat.mtimeMs})`
       );
     }
   }
