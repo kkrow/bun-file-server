@@ -37,9 +37,19 @@ export async function handleShorten(req: Request) {
   // Generate deletion URL and save to database
   const date = Date.now();
   const deletionUrl = await generateRandomName("", true);
-  db.run(
-    `INSERT INTO urls (url, deletionUrl, short, views, date) VALUES ('${url}', '${deletionUrl}', '${short}', 0, ${date})`,
-  );
+  try {
+    db.run(
+      `INSERT INTO urls (url, deletionUrl, short, views, date) VALUES ('${url}', '${deletionUrl}', '${short}', 0, ${date})`
+    );
+  } catch (e) {
+    if (e instanceof Error && e.message.includes("UNIQUE constraint failed")) {
+      return Response.json(
+        { error: "Short URL already exists" },
+        { status: 400 }
+      );
+    }
+    return Response.json({ error: "Failed to shorten URL" }, { status: 400 });
+  }
 
   // Return shortened URL details
   return Response.json({

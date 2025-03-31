@@ -3,7 +3,7 @@ import db from "~/utils/database";
 import { getUri } from "../utils/get-uri";
 
 // Get root directory for file storage from environment variables
-const { ROOT_DIR = "./uploads" } = env;
+const { ROOT_DIR = "uploads" } = env;
 
 /**
  * Handles file requests with support for range requests (partial downloads)

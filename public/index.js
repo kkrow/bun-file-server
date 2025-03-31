@@ -81,6 +81,7 @@ function appendFile(containerId, file, short = false) {
   link.textContent = short
     ? formatUrl(file.url || file.name, short)
     : file.name;
+  link.target = "_blank";
 
   const sub = createEl("div");
   addClass(sub, "sub");
@@ -167,7 +168,7 @@ function upload(file, password) {
   const progressText = progressItem.querySelector(".progress-text");
   elements.progressList.insertBefore(
     progressItem,
-    elements.progressList.firstChild,
+    elements.progressList.firstChild
   );
   elements.uploadProgressContainer.hidden = false;
 
@@ -252,7 +253,7 @@ async function getFiles() {
     } else {
       showError(
         `Error ${response.status}`,
-        "An error occurred while trying to get the files.",
+        "An error occurred while trying to get the files."
       );
     }
   } catch {
@@ -352,7 +353,7 @@ function dlcfg() {
   const p = elements.passwordInput.value;
   if (!p)
     return alert(
-      "Please enter the upload password before downloading the ShareX config.",
+      "Please enter the upload password before downloading the ShareX config."
     );
   const a = createEl("a");
   const b = new Blob(
@@ -371,7 +372,7 @@ function dlcfg() {
         ErrorMessage: "$json:error$",
       }),
     ],
-    { type: "text/plain" },
+    { type: "text/plain" }
   );
   a.href = URL.createObjectURL(b);
   a.download = "bun-file-server.sxcu";

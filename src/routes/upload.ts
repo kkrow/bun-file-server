@@ -7,7 +7,7 @@ import { generateRandomName } from "~/utils/generate-random-name";
 import { humanReadableSize } from "~/utils/human-filesize";
 
 // Get root directory for file storage from environment variables
-const { ROOT_DIR = "./uploads" } = env;
+const { ROOT_DIR = "uploads" } = env;
 
 /**
  * Interface defining the structure of the upload response
@@ -29,7 +29,7 @@ interface UploadResult {
  */
 async function cleanupResources(
   reader: ReadableStreamDefaultReader | null,
-  writeStream: ReturnType<typeof createWriteStream> | null,
+  writeStream: ReturnType<typeof createWriteStream> | null
 ) {
   if (reader) {
     reader.releaseLock();
@@ -59,7 +59,7 @@ async function processFileChunk(
   writeStream: ReturnType<typeof createWriteStream>,
   isWritingFile: boolean,
   headerFound: boolean,
-  options: { randomizeName: boolean },
+  options: { randomizeName: boolean }
 ): Promise<{
   buffer: Buffer<ArrayBuffer>;
   isWritingFile: boolean;
@@ -96,7 +96,7 @@ async function processFileChunk(
 
       // Move buffer past boundary
       newBuffer = newBuffer.slice(
-        boundaryPos + boundary.length,
+        boundaryPos + boundary.length
       ) as Buffer<ArrayBuffer>;
       isWritingFile = false;
       headerFound = false;
@@ -108,7 +108,7 @@ async function processFileChunk(
         bytesWritten += chunk.length;
       }
       newBuffer = newBuffer.slice(
-        newBuffer.length - 100,
+        newBuffer.length - 100
       ) as Buffer<ArrayBuffer>;
     }
   }
@@ -132,7 +132,7 @@ async function processFileChunk(
 async function handleFileUpload(
   req: Request,
   boundary: string,
-  fileName: string,
+  fileName: string
 ): Promise<UploadResult> {
   // Create temporary and final file paths
   const tempPath = `${ROOT_DIR}/temp_${Date.now()}_${fileName}`;
@@ -164,7 +164,7 @@ async function handleFileUpload(
         writeStream,
         isWritingFile,
         headerFound,
-        options,
+        options
       );
 
       buffer = result.buffer;
@@ -209,7 +209,7 @@ async function handleFileUpload(
 
     // Save file metadata to database
     db.run(
-      `INSERT INTO files (name, deletionUrl, size, date, views) VALUES ('${finalFileName}', '${deletionUrl}', ${bytesRead}, ${date}, 0)`,
+      `INSERT INTO files (name, deletionUrl, size, date, views) VALUES ('${finalFileName}', '${deletionUrl}', ${bytesRead}, ${date}, 0)`
     );
 
     return {
@@ -272,7 +272,7 @@ export async function handleUpload(req: Request): Promise<Response> {
         success: false,
         error: "Failed to save file",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

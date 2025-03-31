@@ -49,7 +49,6 @@ const htmlWithCss = htmlContent.replace(
 const minifiedHtml = await minify(htmlWithCss, {
   removeComments: true,
   collapseWhitespace: true,
-  minifyCSS: true,
   minifyJS: true,
 });
 await fs.writeFile("./dist/index.html", minifiedHtml);
