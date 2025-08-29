@@ -40,3 +40,11 @@ db.sqlite
 # Compiled output
 bun-file-server
 dist/
+
+# Docker
+.docker/
+docker-compose.override.yml
+*.dockerfile
+
+# Local data directories
+data/
