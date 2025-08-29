@@ -1,6 +1,8 @@
 # Dockerfile for bun-file-server with multi-stage build
 ARG BUN_VERSION=1.2.20
 ARG TARGETARCH
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
 
 # Stage 1: Build dependencies and compile
 FROM oven/bun:${BUN_VERSION}-slim AS builder
@@ -20,14 +22,15 @@ COPY . .
 RUN bun run build.js
 
 # Compile executable for target architecture
-RUN if [ "$TARGETARCH" = "arm64" ]; then \
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ] || [ "$TARGETARCH" = "arm64" ]; then \
         bun build ./src/index.ts --compile --minify --sourcemap --outfile bun-file-server --target=bun-linux-arm64; \
     else \
         bun build ./src/index.ts --compile --minify --sourcemap --outfile bun-file-server --target=bun-linux-amd64; \
     fi
 
 # Stage 2: Final image
-FROM alpine:3.22.1
+FROM debian:13-slim
 
 # Metadata
 LABEL org.opencontainers.image.title="Bun File Server" \
@@ -44,15 +47,15 @@ COPY --from=builder /app/bun-file-server /app/bun-file-server
 COPY --from=builder /app/dist /app/dist
 
 # Install required dependencies and create user
-RUN apk add --no-cache \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
         wget \
         ca-certificates \
-        tzdata \
-        libc6-compat \
-        libgcc \
-        libstdc++ && \
-    addgroup -g 1001 -S appuser && \
-    adduser -u 1001 -S appuser -G appuser && \
+        tzdata && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    groupadd -g 1001 appuser && \
+    useradd -u 1001 -g appuser -s /bin/bash -m appuser && \
     mkdir -p /app/uploads /app/data && \
     chown -R appuser:appuser /app
 
