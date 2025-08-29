@@ -45,6 +45,7 @@ setInterval(
  * - "/api/delete-url/:deletionUrl" -> Handles URL deletion
  * - "/u/:short" -> Redirects shortened URLs to full URLs
  * - "/public/*" -> Serves static files from the public directory
+ * - "/health" -> Health check endpoint for monitoring
  */
 const server = serve({
   port: PORT,
@@ -52,6 +53,7 @@ const server = serve({
   maxRequestBodySize: Infinity, // Allow unlimited file uploads
   routes: {
     "/": Response.redirect("/public/"),
+    "/health": () => new Response("healthy", { status: 200, headers: { "Content-Type": "text/plain" } }),
     "/:file": handleFiles,
     "/api/upload": handleUpload,
     "/api/delete-file/:deletionUrl": handleDeleteFile,
