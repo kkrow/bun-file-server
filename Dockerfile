@@ -27,7 +27,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
     fi
 
 # Stage 2: Final image
-FROM debian:12-slim
+FROM alpine:3.22.1
 
 # Metadata
 LABEL org.opencontainers.image.title="Bun File Server" \
@@ -43,10 +43,16 @@ COPY --from=builder /app/bun-file-server /app/bun-file-server
 # Copy built static files
 COPY --from=builder /app/dist /app/dist
 
-# Install wget for healthcheck and create user
-RUN apt-get update && apt-get install -y wget && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    groupadd -r appuser && useradd -r -g appuser appuser && \
+# Install required dependencies and create user
+RUN apk add --no-cache \
+        wget \
+        ca-certificates \
+        tzdata \
+        libc6-compat \
+        libgcc \
+        libstdc++ && \
+    addgroup -g 1001 -S appuser && \
+    adduser -u 1001 -S appuser -G appuser && \
     mkdir -p /app/uploads /app/data && \
     chown -R appuser:appuser /app
 
